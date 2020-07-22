@@ -31,6 +31,17 @@
             var map = new naver
                 .maps
                 .Map('map', mapOptions);
+
+            marker=new naver.maps.Marker({ //마커라는 변수 생성
+            map : map, //현재 사용중인 지도위에 덧붙히기
+            position : new naver
+                    .maps
+                    .LatLng(37.3595704, 127.105399), //위치는 중앙
+            icon : {
+                content : "<div class = 'marker'></div>"//마커라는 클래스 이름을 준다
+            }
+            })
+            
         </script>
     </body>
 </html>
