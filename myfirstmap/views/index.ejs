@@ -19,7 +19,7 @@
           <div id ="infoContent">2020.07.21.</div>
         </div>
         <div id="map" style="width:100%;height:100vh;"></div>
-
+        <script tpye="text/javascript"src="/data/data.js"></script>
         <script>
             var mapOptions = {
                 center: new naver
@@ -28,19 +28,24 @@
                 zoom: 10
             };
 
-            var map = new naver
-                .maps
-                .Map('map', mapOptions);
+            var map = new naver.maps.Map('map', mapOptions);
 
-            marker=new naver.maps.Marker({ //마커라는 변수 생성
-            map : map, //현재 사용중인 지도위에 덧붙히기
-            position : new naver
-                    .maps
-                    .LatLng(37.3595704, 127.105399), //위치는 중앙
-            icon : {
-                content : "<div class = 'marker'></div>"//마커라는 클래스 이름을 준다
+            /*외부 데이터 = data.js에 있는 배열 하나씩 뽑아서 지도에 ㅈ찍어주기*/
+            for(var i in data){
+                var target=data[i];//타이틀이나 컨텐츠 내부 내용 
+                var latlng = new naver.maps.LatLng(target.lat, target.lng);
+                //네이버 맵에 표시될수 있도록 위도 경도 불러오기
+
+                //저번시간에 한거 다시 반복문안에 만들어주기 
+                marker = new naver.maps.Marker({//마커생성
+                    map:map,//현재 지도위에 표시
+                    position: latlng,//위에서 불러온 위도 경도 셋팅
+                    icon : {//css사용 
+                        content:"<div class='marker'></div>",
+                    }
+                })
             }
-            })
+           
             
         </script>
     </body>
