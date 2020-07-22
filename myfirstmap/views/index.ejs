@@ -15,38 +15,78 @@
     <body>
         <div id="navbar">My First Map</div>
         <div id="infoBox">
-          <div id ="infoTitle">현재날짜</div>
-          <div id ="infoContent">2020.07.21.</div>
+            <div id="infoTitle">현재날짜</div>
+            <div id="infoContent">2020.07.21.</div>
         </div>
         <div id="map" style="width:100%;height:100vh;"></div>
-        <script tpye="text/javascript"src="/data/data.js"></script>
+        <script type="text/javascript" src="/data/data.js"></script>
         <script>
             var mapOptions = {
-                center: new naver
-                    .maps
-                    .LatLng(37.3595704, 127.105399),
+                center: new naver.maps.LatLng(37.3595704, 127.105399),
                 zoom: 10
             };
-
             var map = new naver.maps.Map('map', mapOptions);
 
-            /*외부 데이터 = data.js에 있는 배열 하나씩 뽑아서 지도에 ㅈ찍어주기*/
-            for(var i in data){
-                var target=data[i];//타이틀이나 컨텐츠 내부 내용 
-                var latlng = new naver.maps.LatLng(target.lat, target.lng);
-                //네이버 맵에 표시될수 있도록 위도 경도 불러오기
+            var markerList = []; //마커들을 담기 위한 배열
+            var infowindowList = []; //인포윈도우를 담을 배열
 
-                //저번시간에 한거 다시 반복문안에 만들어주기 
-                marker = new naver.maps.Marker({//마커생성
-                    map:map,//현재 지도위에 표시
-                    position: latlng,//위에서 불러온 위도 경도 셋팅
-                    icon : {//css사용 
-                        content:"<div class='marker'></div>",
-                    }
-                })
+            /*외부 데이터 = data.js에 있는 배열 하나씩 뽑아서 지도에 ㅈ찍어주기*/
+            for (var i in data) {
+                var target = data[i]; //타이틀이나 컨텐츠 내부 내용
+                var latlng = new naver.maps.LatLng(target.lat, target.lng);
+                //네이버 맵에 표시될수 있도록 위도 경도 불러오기 저번시간에 한거 다시 반복문안에 만들어주기
+                marker = new naver.maps.Marker({ //마커생성
+                        map: map, //현재 지도위에 표시
+                        position: latlng, //위에서 불러온 위도 경도 셋팅
+                        icon: {
+                            //css사용
+                            content: "<div class='marker'></div>",
+                            anchor: new naver.maps.Point(12, 12)
+                                //야이콘의 중심좌표 변경 네이버 마커가 아니라 따로 만들어 쓰는거라
+                        },
+                    });
+
+                //마커 누르면 띄울 놈 각각의 데이터 가져오는중
+                var content = `<div class ='infowindow_wrap'>
+                    <div class='infowindow_title'>${target.title}</div>
+                    <div class='infowindow_content'>${target.content}</div>
+                    <div class='infowindow_date'>${target.date}</div>
+                    </div>>`
+
+                //infowindow를 띄우는 코드
+                var infowindow = new naver.maps.InfoWindow({
+                        content: content, //데이터 넣고
+                        backgroundColor: "#00ff0000", //이둘은 우리가 CSS를 따로 적용하기위해서
+                        borderColor: "#00ff0000", //투명한 색으로 초기화 해준것
+                        anchorSize: new naver.maps.Size(0, 0) //말풍선 꼬리 제거
+                    })
+
+
+                markerList.push(marker); 
+                //클릭했을때 누가 튀어나와야하는지 알수 있게 하는 준비과정
+                infowindowList.push(infowindow);
             }
-           
-            
+
+            //클릭시 이벤트 리스너
+            for (var i = 0, ii = markerList.length; i < ii; i++) {
+                naver.maps.Event.addListener(markerList[i], "click", getClickHandler(i));
+            }
+
+            //클릭을 하면 클릭한 i번째 놈 반환한다는거시여 클릭시 세부창 떠있으면 닫아주고 없으면 듸워주는
+            function getClickHandler(i) {
+                return function () {
+                    var marker = markerList[i];
+                    var infowindow = infowindowList[i];
+                    if (infowindow.getMap()) { 
+                        //infowindow 떠잇는지 안떠있는지 체크해주는 함수
+                        infowindow.close(); 
+                        //열려있으면 닫기
+                    } else {
+                        infowindow.open(map, marker) 
+                        //혹은 닫혀있으면 마커위에 인포윈도우 열려라!
+                    }
+                } 
+            }
         </script>
     </body>
 </html>
