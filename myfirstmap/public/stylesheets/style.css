@@ -61,3 +61,17 @@ body {
   font-size: 13px;
   font-weight: normal;
 }
+
+#current{
+  position: absolute;
+  top: 180px;
+  z-index: 10000;
+  background:  white;
+  left:20px;
+  padding: 15px;
+  border:1px solid rgba(0,0,0,0.2);
+  border-radius: 4px;
+  text-align:center; /*텍스트 정렬법*/
+  cursor: pointer; /*마우스 올라갔을때 손가락 모양*/
+  font-weight: bolder;
+}
